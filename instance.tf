@@ -1,8 +1,8 @@
 resource "aws_instance" "web-server" {
-    ami = "ami-026b57f3c383c2eec"
+    ami = "ami-078296f82eb463377"
     instance_type = "t2.micro"
     count = 2
-    key_name = "Deepakshi"
+    key_name = "shubham"
     security_groups = [aws_security_group.web-sg.name]
     user_data = "${file("userdata.sh")}"
     tags = {
