@@ -1,0 +1,42 @@
+node{
+    def buildNumber = BUILD_NUMBER  
+    stage('SCM Checkout'){
+        git url: 'https://github.com/DeepakshiPurushotham/Tasks.git',branch: 'master'
+    }
+    
+    stage(" Maven Clean Package"){
+      def mavenHome =  tool name: "maven_3.8.6", type: "maven"
+      def mavenCMD = "${mavenHome}/bin/mvn"
+      sh "${mavenCMD} clean package"
+      
+    } 
+    
+    
+    stage('Build Docker Image'){
+        sh "docker build -t deepakshipurushotham/web-app:${buildNumber} ."
+    }
+    
+    stage('Push Docker Image'){
+       withCredentials([string(credentialsId: 'Docker_pwd', variable: 'Docker_pwd')]) {
+    // some block
+       sh "docker login -u deepakshipurushotham -p ${Docker_pwd}"
+     }
+        sh "docker push deepakshipurushotham/web-app:${buildNumber}"
+     }
+     
+      stage('Run Docker Image In Dev Server'){
+        
+        def dockerRun = "docker run  -d -p 8080:8080 --name maven-web-app deepakshipurushotham/web-app:${buildNumber}"
+         
+         sshagent(['Pem_key']) {
+    // some block
+          sh 'ssh -o StrictHostKeyChecking=no ec2-user@44.208.25.186 docker stop maven-web-app || true'
+          sh 'ssh  ec2-user@44.208.25.186 docker rm maven-web-app || true'
+          sh 'ssh  ec2-user@44.208.25.186 docker rmi -f  $(docker images -q) || true'
+          sh "ssh  ec2-user@44.208.25.186 ${dockerRun}"
+       }
+       
+    }
+     
+     
+}
