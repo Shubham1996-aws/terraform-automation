@@ -2,14 +2,14 @@
 resource "aws_lb_target_group" "alb-tg" {
     health_check {
       interval = 10
-      path = "/"
+      path = "/maven-web-aplication/"
       protocol = "HTTP"
       timeout = 5
       healthy_threshold  = 3
       unhealthy_threshold = 2
     }
     name = "alb-tg"
-    port = 80
+    port = 8080
     protocol = "HTTP"
     target_type = "instance"
     vpc_id = data.aws_vpc.default-vpc.id
@@ -31,7 +31,7 @@ resource "aws_lb" "alb" {
 # listener creation
 resource "aws_lb_listener" "alb-listener" {
     load_balancer_arn = aws_lb.alb.arn
-    port = 80
+    port = 8080
     protocol = "HTTP"
     default_action {
       target_group_arn = aws_lb_target_group.alb-tg.arn
