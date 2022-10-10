@@ -40,7 +40,7 @@ pipeline {
         stage('Deploy Docker Image to Server') {
             steps {
                 sshagent(['a22dbe43-7363-436a-879a-c8ab4dbfa224']) {
-                    sh "ssh -o StrictHostKeyChecking=no ec2-user@18.181.78.200 docker run -d --name webcontainer -p 8080:8080 shubhamaken/web-app:${buildnumber}"
+                    sh "ssh -o StrictHostKeyChecking=no ec2-user@54.250.248.221 docker run -d --name webcontainer -p 8080:8080 shubhamaken/web-app:${buildnumber}"
                 }
             }
         }
