@@ -8,7 +8,7 @@ resource "aws_lb_target_group" "target_target" {
       healthy_threshold  = 3
       unhealthy_threshold = 2
     }
-    name = "albtg"
+    name = "alb_tg"
     port = 8080
     protocol = "HTTP"
     target_type = "instance"
@@ -18,7 +18,7 @@ resource "aws_lb_target_group" "target_target" {
 
 # creating alb
 resource "aws_lb" "application_load_balancer" {
-    name = "alb-web"
+    name = "application_load_balancer"
     internal = false
     ip_address_type = "ipv4"
     load_balancer_type = "application"
@@ -49,6 +49,6 @@ resource "aws_lb_target_group_attachment" "alb_attach" {
 
 #dns output
 output "alb_dns1" {
-    value = aws_lb.alb.dns_name
+    value = aws_lb.application_load_balancer.dns_name
   
 }
