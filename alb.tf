@@ -34,7 +34,7 @@ resource "aws_lb_listener" "alb_listener" {
     port = 8080
     protocol = "HTTP"
     default_action {
-      target_group_arn = aws_lb_target-group.alb-tg1.arn
+      target_group_arn = aws_lb_target_group.target-group.arn
       type = "forward"
     }
 }
