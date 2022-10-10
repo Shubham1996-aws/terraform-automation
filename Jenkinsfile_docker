@@ -1,42 +1,48 @@
-node{
-    def buildNumber = BUILD_NUMBER  
-    stage('SCM Checkout'){
-        git url: 'https://github.com/DeepakshiPurushotham/Tasks.git',branch: 'master'
+def buildnumber = BUILD_NUMBER
+
+pipeline {
+    agent any
+    
+    
+    
+    tools{
+        maven 'maven3.8.6'
     }
-    
-    stage(" Maven Clean Package"){
-      def mavenHome =  tool name: "maven_3.8.6", type: "maven"
-      def mavenCMD = "${mavenHome}/bin/mvn"
-      sh "${mavenCMD} clean package"
-      
-    } 
-    
-    
-    stage('Build Docker Image'){
-        sh "docker build -t deepakshipurushotham/web-app:${buildNumber} ."
-    }
-    
-    stage('Push Docker Image'){
-       withCredentials([string(credentialsId: 'Docker_pwd', variable: 'Docker_pwd')]) {
-    // some block
-       sh "docker login -u deepakshipurushotham -p ${Docker_pwd}"
-     }
-        sh "docker push deepakshipurushotham/web-app:${buildNumber}"
-     }
-     
-      stage('Run Docker Image In Dev Server'){
+
+    stages {
+        stage('Git Clone') {
+            steps {
+                git 'https://github.com/Shubham1996-aws/terraform-automation.git'
+            }
+        }
         
-        def dockerRun = "docker run  -d -p 8080:8080 --name maven-web-app deepakshipurushotham/web-app:${buildNumber}"
-         
-         sshagent(['Pem_key']) {
-    // some block
-          sh 'ssh -o StrictHostKeyChecking=no ec2-user@44.208.25.186 docker stop maven-web-app || true'
-          sh 'ssh  ec2-user@44.208.25.186 docker rm maven-web-app || true'
-          sh 'ssh  ec2-user@44.208.25.186 docker rmi -f  $(docker images -q) || true'
-          sh "ssh  ec2-user@44.208.25.186 ${dockerRun}"
-       }
-       
+        stage('Maven Build') {
+            steps {
+                sh 'mvn clean package'
+            }
+        }
+        
+        stage('Build Docker Image') {
+            steps {
+                sh "docker build -t shubhamaken/web-app:${buildnumber} ."
+            }
+        }
+        
+        stage('Push Docker Image to DockerHub') {
+            steps {
+                withCredentials([string(credentialsId: 'dockerhub', variable: 'dockerhubpwd')]) {
+                sh "docker login -u shubhamaken -p ${dockerhubpwd}"
+              }
+              sh "docker push shubhamaken/web-app:${buildnumber}"
+            }
+        }
+        
+        stage('Deploy Docker Image to Server') {
+            steps {
+                sshagent(['a22dbe43-7363-436a-879a-c8ab4dbfa224']) {
+                    sh "ssh -o StrictHostKeyChecking=no ec2-user@18.181.78.200 docker run -d --name webcontainer -p 8080:8080 shubhamaken/web-app:${buildnumber}"
+                }
+            }
+        }
     }
-     
-     
 }
