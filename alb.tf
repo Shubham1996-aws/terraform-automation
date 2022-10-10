@@ -18,7 +18,7 @@ resource "aws_lb_target_group" "target-group" {
 
 # creating alb
 resource "aws_lb" "application-load-balancer" {
-    name = "application_load_balancer"
+    name = "application-load-balancer"
     internal = false
     ip_address_type = "ipv4"
     load_balancer_type = "application"
