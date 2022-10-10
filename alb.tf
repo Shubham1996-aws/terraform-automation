@@ -8,7 +8,7 @@ resource "aws_lb_target_group" "alb-tg" {
       healthy_threshold  = 3
       unhealthy_threshold = 2
     }
-    name = "alb-tg"
+    name = "albtg"
     port = 8080
     protocol = "HTTP"
     target_type = "instance"
@@ -18,7 +18,7 @@ resource "aws_lb_target_group" "alb-tg" {
 
 # creating alb
 resource "aws_lb" "alb" {
-    name = "alb"
+    name = "alb-web"
     internal = false
     ip_address_type = "ipv4"
     load_balancer_type = "application"

@@ -6,7 +6,7 @@ resource "aws_instance" "web-server" {
     security_groups = [aws_security_group.web-sg.name]
     user_data = "${file("userdata.sh")}"
     tags = {
-      "Name" = "web-${count.index}"
+      "Name" = "server-${count.index}"
     }
   
 } 

@@ -11,6 +11,6 @@
    skip_final_snapshot = true
 
    tags = {
-     Name = "RDS"
+     Name = "myrds"
    }
  }
