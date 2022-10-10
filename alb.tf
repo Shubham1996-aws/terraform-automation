@@ -1,5 +1,5 @@
 # target group creation
-resource "aws_lb_target_group" "alb-tg" {
+resource "aws_lb_target_group" "alb-tg1" {
     health_check {
       interval = 10
       path = "/maven-web-aplication/"
@@ -34,7 +34,7 @@ resource "aws_lb_listener" "alb-listener" {
     port = 8080
     protocol = "HTTP"
     default_action {
-      target_group_arn = aws_lb_target_group.alb-tg.arn
+      target_group_arn = aws_lb_target_group.alb-tg1.arn
       type = "forward"
     }
 }
