@@ -1,5 +1,5 @@
 # target group creation
-resource "aws_lb_target_group" "target_target" {
+resource "aws_lb_target_group" "target_group" {
     health_check {
       interval = 10
       path = "/maven-web-aplication/"
@@ -17,7 +17,7 @@ resource "aws_lb_target_group" "target_target" {
 }
 
 # creating alb
-resource "aws_lb" "application_load_balancer" {
+resource "aws_lb" "application-load-balancer" {
     name = "application_load_balancer"
     internal = false
     ip_address_type = "ipv4"
@@ -30,7 +30,7 @@ resource "aws_lb" "application_load_balancer" {
 }
 # listener creation
 resource "aws_lb_listener" "alb_listener" {
-    load_balancer_arn = aws_lb.alb.arn
+    load_balancer_arn = aws_lb.application-load-balancer.arn
     port = 8080
     protocol = "HTTP"
     default_action {
@@ -42,7 +42,7 @@ resource "aws_lb_listener" "alb_listener" {
 
 resource "aws_lb_target_group_attachment" "alb_attach" {
     count = length(aws_instance.web-server)
-    target_group_arn = aws_lb_target_group.alb-tg1.arn
+    target_group_arn = aws_lb_target_group.target_group.arn
     target_id = aws_instance.web-server[0].id 
   
 }
